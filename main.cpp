@@ -1,0 +1,112 @@
+#include <vector>
+#include <random>
+#include <iterator>
+#include <iostream>
+#include <chrono>
+#include <iomanip>
+
+using std::vector;
+using milli = std::chrono::milliseconds;
+
+void print(const vector<int>& numbers)
+{
+	std::copy(begin(numbers), end(numbers), std::ostream_iterator<int>(std::cout, " "));
+	std::cout << '\n';
+}
+
+void isSorted(const vector<int>& numbers)
+{
+	std::is_sorted(begin(numbers), end(numbers)) ? std::cout << "Sorted\n" : std::cout << "Unsorted\n";
+}
+
+vector<int> selfIndexSort(vector<int> numbers)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+
+	// Initialize Sort Space O(n)
+	int biggest_num = std::numeric_limits<int>::min(), smallest_num = std::numeric_limits<int>::max();
+	for (int num : numbers)
+	{
+		if (num < smallest_num)
+			smallest_num = num;
+		if (num > biggest_num)
+			biggest_num = num;
+	}
+
+	// Self-indexed arrangement O(n)
+	vector<int> sort_space(biggest_num - smallest_num + 1, 0);
+	const int NUMBERS_COUNT = numbers.size();
+	for (int num : numbers)
+		sort_space[num - smallest_num]++;
+	
+	// Order-preserved compression
+	{
+		unsigned i = 0, SS_COUNT = sort_space.size();
+		for (unsigned j = 0; j < SS_COUNT; ++j)  // O(m)?
+			while (sort_space[j] > 0) 
+			{
+				numbers[i] = j + smallest_num;
+				sort_space[j]--;
+				i++;
+			}
+	}
+
+	std::cout << std::setfill(' ') << std::setw(10) 
+		<< std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - start).count() 
+		<< " ms - selfIndexSort\n";
+
+	return numbers;
+}
+
+vector<int> quickSort(vector<int> numbers)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+
+	std::sort(begin(numbers), end(numbers));
+	auto finish = std::chrono::high_resolution_clock::now();
+
+	std::cout << std::setfill(' ') << std::setw(10) 
+		<< std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - start).count() 
+		<< " ms - quickSort\n";
+
+	return numbers;
+}
+
+vector<int> generateNumbers(const unsigned COUNT, const int RANGE_START, const int RANGE_END)
+{
+	vector<int> numbers(COUNT);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(RANGE_START, RANGE_END);
+
+	std::cout << "Generating " << COUNT << " random numbers from [" << RANGE_START << ", " << RANGE_END << "]...\n";
+
+	for (unsigned i = 0; i < COUNT; ++i)
+		numbers[i] = dist(gen);
+
+	return numbers;
+}
+
+void test(const unsigned COUNT, const int RANGE_START, const int RANGE_END)
+{
+	vector<int> unsorted_numbers = generateNumbers(COUNT, RANGE_START, RANGE_END);
+	std::cout << "Sorting...\n";
+	vector<int> sorted_sis_numbers = selfIndexSort(unsorted_numbers);
+	vector<int> sorted_qs_numbers = quickSort(unsorted_numbers);
+
+	//std::cout << "Sanity check...\nsis\t";
+	//isSorted(sorted_sis_numbers);
+	//std::cout << "qs\t";
+	//isSorted(sorted_qs_numbers);
+	//std::cout << "\n";
+}
+
+int main()
+{
+	test(  1'000'000,			 0,	100'000'000);
+	test(100'000'000,			 0,	100'000'000);
+	test(100'000'000,	-1'000'000,	  1'000'000);
+
+	std::cout << "Press enter to exit...";
+	std::cin.get();
+}
