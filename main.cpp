@@ -32,10 +32,9 @@ vector<int> selfIndexSort(vector<int> numbers)
 		if (num > biggest_num)
 			biggest_num = num;
 	}
-
-	// Self-indexed arrangement O(n)
 	vector<int> sort_space(biggest_num - smallest_num + 1, 0);
-	const int NUMBERS_COUNT = numbers.size();
+	
+	// Self-indexed arrangement O(n)	
 	for (int num : numbers)
 		sort_space[num - smallest_num]++;
 	
