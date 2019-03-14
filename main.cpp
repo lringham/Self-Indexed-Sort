@@ -20,7 +20,7 @@ vector<int> selfIndexSort(vector<int> numbers)
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
-	// Initialize Sort Space O(n)
+	// Initialize Sort Space
 	int biggest_num = std::numeric_limits<int>::min(), smallest_num = std::numeric_limits<int>::max();
 	for (int num : numbers)
 	{
@@ -31,7 +31,7 @@ vector<int> selfIndexSort(vector<int> numbers)
 	}
 	vector<int> sort_space(biggest_num - smallest_num + 1, 0);
 	
-	// Self-indexed arrangement O(n)	
+	// Self-indexed arrangement	
 	for (int num : numbers)
 		sort_space[num - smallest_num]++;
 	
@@ -41,9 +41,8 @@ vector<int> selfIndexSort(vector<int> numbers)
 		for (unsigned j = 0; j < SS_COUNT; ++j)  // O(m)?
 			while (sort_space[j] > 0) 
 			{
-				numbers[i] = j + smallest_num;
+				numbers[i++] = j + smallest_num;
 				sort_space[j]--;
-				i++;
 			}
 	}
 
@@ -70,15 +69,15 @@ vector<int> quickSort(vector<int> numbers)
 
 vector<int> generateNumbers(const unsigned COUNT, const int RANGE_START, const int RANGE_END)
 {
-	vector<int> numbers(COUNT);
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(RANGE_START, RANGE_END);
-
 	std::cout << "Generating " << COUNT << " random numbers from [" << RANGE_START << ", " << RANGE_END << "]...\n";
 
-	for (unsigned i = 0; i < COUNT; ++i)
-		numbers[i] = dist(gen);
+	vector<int> numbers(COUNT);
+	std::mt19937 gen(std::random_device{}());
+	std::uniform_int_distribution<int> dist(RANGE_START, RANGE_END);
+	std::generate(begin(numbers), end(numbers), [&]()
+	{
+		return dist(gen);
+	});
 
 	return numbers;
 }
