@@ -5,6 +5,7 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>
+#include <assert.h> 
 
 using std::vector;
 using milli = std::chrono::milliseconds;
@@ -13,11 +14,6 @@ void print(const vector<int>& numbers)
 {
 	std::copy(begin(numbers), end(numbers), std::ostream_iterator<int>(std::cout, " "));
 	std::cout << '\n';
-}
-
-void isSorted(const vector<int>& numbers)
-{
-	std::is_sorted(begin(numbers), end(numbers)) ? std::cout << "Sorted\n" : std::cout << "Unsorted\n";
 }
 
 vector<int> selfIndexSort(vector<int> numbers)
@@ -94,11 +90,11 @@ void test(const unsigned COUNT, const int RANGE_START, const int RANGE_END)
 	vector<int> sorted_sis_numbers = selfIndexSort(unsorted_numbers);
 	vector<int> sorted_qs_numbers = quickSort(unsorted_numbers);
 
-	//std::cout << "Sanity check...\nsis\t";
-	//isSorted(sorted_sis_numbers);
-	//std::cout << "qs\t";
-	//isSorted(sorted_qs_numbers);
-	//std::cout << "\n";
+	// Sanity check
+	assert(std::is_sorted(begin(sorted_sis_numbers), end(sorted_sis_numbers)));
+	assert(std::is_sorted(begin(sorted_qs_numbers), end(sorted_qs_numbers)));
+	for (unsigned i = 0; i < COUNT; ++i)
+		assert(sorted_sis_numbers[i] == sorted_qs_numbers[i]);
 }
 
 int main()
