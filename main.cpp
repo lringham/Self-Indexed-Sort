@@ -115,26 +115,26 @@ void test(const unsigned COUNT, const int RANGE_START, const int RANGE_END)
 
 int main()
 {
-	//// Test increasing number count
-	//test(1'000'000, 0, 1'000'000);
-	//test(2'000'000, 0, 1'000'000);
-	//test(3'000'000, 0, 1'000'000);
-	//test(4'000'000, 0, 1'000'000);
-	//test(5'000'000, 0, 1'000'000);
+	// Test increasing number count
+	test(1'000'000, 0, 1'000'000);
+	test(2'000'000, 0, 1'000'000);
+	test(3'000'000, 0, 1'000'000);
+	test(4'000'000, 0, 1'000'000);
+	test(5'000'000, 0, 1'000'000);
 
-	//// Test performance with small gaps
-	//test(100'000'000, 0, 50'000);
-	//test(200'000'000, 0, 50'000);
-	//test(300'000'000, 0, 50'000);
-	//test(400'000'000, 0, 50'000);
-	//test(500'000'000, 0, 50'000);
+	// Test performance with small gaps
+	test(100'000'000, 0, 50'000);
+	test(200'000'000, 0, 50'000);
+	test(300'000'000, 0, 50'000);
+	test(400'000'000, 0, 50'000);
+	test(500'000'000, 0, 50'000);
 
-	//// Test gap size inceasing
-	//test(10'000, 0, 1'000'000);
-	//test(10'000, 0, 10'000'000);
-	//test(10'000, 0, 100'000'000);
-	//test(10'000, 0, 250'000'000);
-	//test(10'000, 0, 500'000'000);
+	// Test gap size inceasing
+	test(10'000, 0, 1'000'000);
+	test(10'000, 0, 10'000'000);
+	test(10'000, 0, 100'000'000);
+	test(10'000, 0, 250'000'000);
+	test(10'000, 0, 500'000'000);
 
 	// Test a very large array and range
 	test(2'000'000'000, 0, 2'000'000'000);
