@@ -56,6 +56,7 @@ vector<int> selfIndexSort(vector<int> numbers)
 			biggest_num = num;
 	}
 	const unsigned SS_COUNT = biggest_num - smallest_num + 1;
+	auto start_prefactored = timer::now();
 	vector<int> sort_space(SS_COUNT, 0);
 
 	// Self-indexed arrangement	
@@ -73,34 +74,15 @@ vector<int> selfIndexSort(vector<int> numbers)
 			}
 	}
 
+	// Print out timing information
+	auto end = timer::now();
 	std::cout << std::setfill(' ') << std::setw(10)
-		<< std::chrono::duration_cast<milli>(timer::now() - start).count()
+		<< std::chrono::duration_cast<milli>(end - start).count()
 		<< " ms - selfIndexSort\n";
 
-	return numbers;
-}
-
-vector<int> selfIndexSort(vector<int> numbers, int smallest_num, int biggest_num)
-{
-	auto start = timer::now();
-
-	const unsigned SS_COUNT = biggest_num - smallest_num + 1;
-	vector<int> sort_space(SS_COUNT, 0);
-
-	for (int num : numbers)
-		sort_space[num - smallest_num]++;
-
-	unsigned i = 0;
-	for (unsigned j = 0; j < SS_COUNT; ++j)
-		while (sort_space[j] > 0)
-		{
-			numbers[i++] = j + smallest_num;
-			sort_space[j]--;
-		}
-
 	std::cout << std::setfill(' ') << std::setw(10)
-		<< std::chrono::duration_cast<milli>(timer::now() - start).count()
-		<< " ms - selfIndexSort (pre-factored)\n";
+		<< std::chrono::duration_cast<milli>(end - start_prefactored).count()
+		<< " ms - selfIndexSort (prefactored)\n";
 
 	return numbers;
 }
@@ -119,31 +101,43 @@ void test(const unsigned COUNT, const int RANGE_START, const int RANGE_END)
 
 	std::cout << "Sorting...\n";
 	selfIndexSort(unsorted_numbers);
-	selfIndexSort(unsorted_numbers, smallest_num, biggest_num);
 	quickSort(unsorted_numbers);
 
 	// Sanity check
 	//vector<int> sorted_sis_numbers = selfIndexSort(unsorted_numbers);
-	//vector<int> sorted_sis_numbers2 = selfIndexSort(unsorted_numbers, smallest_num, biggest_num);
 	//vector<int> sorted_qs_numbers = quickSort(unsorted_numbers);
 
 	//assert(std::is_sorted(begin(sorted_sis_numbers), end(sorted_sis_numbers)));
-	//assert(std::is_sorted(begin(sorted_qs_numbers), end(sorted_qs_numbers)));
 	//assert(std::is_sorted(begin(sorted_sis_numbers2), end(sorted_sis_numbers2)));
 	//for (unsigned i = 0; i < COUNT; ++i)
-	//{
 	//	assert(sorted_sis_numbers[i] == sorted_qs_numbers[i]);
-	//	assert(sorted_sis_numbers2[i] == sorted_qs_numbers[i]);
-	//}
 }
 
 int main()
 {
-	test(1'000'000, 0, 1'000'000);
-	test(2'000'000, 0, 2'000'000);
-	test(3'000'000, 0, 3'000'000);
-	test(4'000'000, 0, 4'000'000);
-	test(5'000'000, 0, 5'000'000);
+	//// Test increasing number count
+	//test(1'000'000, 0, 1'000'000);
+	//test(2'000'000, 0, 1'000'000);
+	//test(3'000'000, 0, 1'000'000);
+	//test(4'000'000, 0, 1'000'000);
+	//test(5'000'000, 0, 1'000'000);
+
+	//// Test performance with small gaps
+	//test(100'000'000, 0, 50'000);
+	//test(200'000'000, 0, 50'000);
+	//test(300'000'000, 0, 50'000);
+	//test(400'000'000, 0, 50'000);
+	//test(500'000'000, 0, 50'000);
+
+	//// Test gap size inceasing
+	//test(10'000, 0, 1'000'000);
+	//test(10'000, 0, 10'000'000);
+	//test(10'000, 0, 100'000'000);
+	//test(10'000, 0, 250'000'000);
+	//test(10'000, 0, 500'000'000);
+
+	// Test a very large array and range
+	test(2'000'000'000, 0, 2'000'000'000);
 
 	std::cout << "Press enter to exit...";
 	std::cin.get();
